@@ -39,9 +39,26 @@ Migrate the table and seeds
 php artisan migrate:refresh --seed
 ```
 
+Herein you might encounter **Application in Production!** prompt
+just type yes
+```
+yes
+```
+
+Or change the app environment into local or create your own .env file
+```
+go to config->app.php
+change from 'env' => env('APP_ENV', 'production') into 'env' => env('APP_ENV', 'local') 
+```
+
 Run the server
 ```
 php artisan serve
+```
+
+Access the server.
+```
+http://127.0.0.1:8000
 ```
 
 ##
