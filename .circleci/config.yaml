@@ -5,6 +5,11 @@
 version: 2
 jobs:
   build:
+   machine:
+    pre:
+     - sudo apt-get update; USE_PRECOMPILE=true sudo -E circleci-install php 7.1.0
+    php:
+      version: 7.1.0
     docker:
       # specify the version you desire here
       - image: circleci/php:7.1.5-browsers
