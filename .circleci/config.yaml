@@ -18,7 +18,10 @@ jobs:
 
     steps:
       - checkout
-
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y zlib1g-dev libicu-dev g++
+      - run: sudo docker-php-ext-configure intl
+      - run: sudo docker-php-ext-install intl
       # Download and cache dependencies
       - restore_cache:
           keys:
