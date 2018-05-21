@@ -1,32 +1,38 @@
+# PHP CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-php/ for more details
+#
 version: 2
-
 jobs:
   build:
     docker:
-      - image: circleci/php:7.2-apache-node-browsers
-    working_directory: ~/laravel
+      # specify the version you desire here
+      - image: circleci/php:7.1.5-browsers
+      
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mysql:9.4
+
+    working_directory: ~/repo
+
     steps:
       - checkout
-      - run: sudo apt install -y libsqlite3-dev zlib1g-dev
-      - run: sudo docker-php-ext-install zip
-      - run: sudo composer self-update
+
+      # Download and cache dependencies
       - restore_cache:
           keys:
-            - composer-v1-{{ checksum "composer.lock" }}
-            - composer-v1-
+          - v1-dependencies-{{ checksum "composer.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
       - run: composer install -n --prefer-dist
+
       - save_cache:
-          key: composer-v1-{{ checksum "composer.lock" }}
           paths:
-            - vendor
-      - restore_cache:
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            - node-v1-
-      - run: yarn install
-      - save_cache:
-          key: node-v1-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+            - ./vendor
+          key: v1-dependencies-{{ checksum "composer.json" }}
+        
+      # run tests!
       - run: touch database/database.sqlite
-      - run: php artisan migrate:refresh -seed --env=testing
+      - run: php artisan migrate:refresh --seed --env=local
